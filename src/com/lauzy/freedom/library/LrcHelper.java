@@ -40,9 +40,9 @@ public class LrcHelper {
         return null;
     }
 
-    public static List<Lrc> parseLrcFromFile(File file) {
+    public static List<Lrc> parseLrcFromFile(String file) {
         try {
-            return parseInputStream(new FileInputStream(file));
+            return parseInputStream(new FileInputStream(new File(file)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

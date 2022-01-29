@@ -3,6 +3,7 @@ package com.lauzy.freedom.library;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +11,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Looper;
 
@@ -31,6 +33,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.text.BidiFormatter;
 
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.io.InputStream;
@@ -89,25 +92,55 @@ public class LrcView extends View {
     private boolean isCurrentTextBold;
     private boolean isLrcIndicatorTextBold;
     private String mPlayDrawableStr;
+    private Paint.Align mTextAlign;
+    private Map<String, Object> mGetterMap;
+    private Context mContext;
 
     public LrcView(Context context) {
-        this(context, null);
-    }
-
-    public LrcView(Context context, BitmapDrawable playbtn) {
         super(context);
-        init(context, playbtn);
+        init(context);
     }
 
-    private void init(Context context, BitmapDrawable mPlayImage) {
+    public void updateGetterMap() {
+
+        mGetterMap.put("mLrcTextSize", mLrcTextSize);
+        mGetterMap.put("mLrcLineSpaceHeight", mLrcLineSpaceHeight);
+        mGetterMap.put("mTouchDelay", mTouchDelay);
+        mGetterMap.put("mIndicatorTouchDelay", mIndicatorTouchDelay);
+        mGetterMap.put("mNormalColor", mNormalColor);
+        mGetterMap.put("mCurrentPlayLineColor", mCurrentPlayLineColor);
+        mGetterMap.put("mTextAlign", mTextAlign);
+        mGetterMap.put("mNoLrcTextSize", mNoLrcTextSize);
+        mGetterMap.put("mNoLrcTextColor", mNoLrcTextColor);
+        mGetterMap.put("mIndicatorLineWidth", mIndicatorLineWidth);
+        mGetterMap.put("mIndicatorTextSize", mIndicatorTextSize);
+        mGetterMap.put("mIndicatorTextColor", mIndicatorTextColor);
+        mGetterMap.put("mCurrentIndicateLineTextColor", mCurrentIndicateLineTextColor);
+        mGetterMap.put("mIndicatorLineColor", mIndicatorLineColor);
+        mGetterMap.put("mIndicatorMargin", mIndicatorMargin);
+        mGetterMap.put("mIconLineGap", mIconLineGap);
+        mGetterMap.put("mIconWidth", mIconWidth);
+        mGetterMap.put("mIconHeight", mIconHeight);
+        mGetterMap.put("isCurrentTextBold", isCurrentTextBold);
+        mGetterMap.put("isLrcIndicatorTextBold", isLrcIndicatorTextBold);
+        mGetterMap.put("mPlayDrawableStr", mPlayDrawableStr);
+    
+    }
+
+    private void init(Context context) {
+
+        this.mContext = context;
+        mGetterMap = new HashMap<>();
 
         mLrcTextSize = sp2px(context, 15);
         mLrcLineSpaceHeight = dp2px(context, 20);
+
         mTouchDelay = 3500;
         mIndicatorTouchDelay = 2500;
 
         mNormalColor = Color.GRAY;
         mCurrentPlayLineColor = Color.BLUE;
+        mTextAlign = Paint.Align.CENTER;
 
         mNoLrcTextSize = dp2px(context, 20);
         mNoLrcTextColor = Color.BLACK;
@@ -128,7 +161,8 @@ public class LrcView extends View {
 
         mPlayDrawableStr = "def_lyric_play_button.png";
         mPlayDrawable = getBmpDrawable(mPlayDrawableStr);
-
+        
+        updateGetterMap();
         setupConfigs(context);
     }
 
@@ -142,7 +176,7 @@ public class LrcView extends View {
 
         mTextPaint = new TextPaint();
         mTextPaint.setAntiAlias(true);
-        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTextPaint.setTextAlign(mTextAlign);
         mTextPaint.setTextSize(mLrcTextSize);
         mDefaultContent = DEFAULT_CONTENT;
 
@@ -166,19 +200,19 @@ public class LrcView extends View {
         }
     }
 
-    private int getLrcWidth() {
+    public int getLrcWidth() {
         return getWidth() - getPaddingLeft() - getPaddingRight();
     }
 
-    private int getLrcHeight() {
+    public int getLrcHeight() {
         return getHeight();
     }
 
-    private boolean isLrcEmpty() {
+    public boolean isLrcEmpty() {
         return mLrcData == null || getLrcCount() == 0;
     }
 
-    private int getLrcCount() {
+    public int getLrcCount() {
         return mLrcData.size();
     }
 
@@ -203,7 +237,7 @@ public class LrcView extends View {
         }
         int indicatePosition = getIndicatePosition();
         mTextPaint.setTextSize(mLrcTextSize);
-        mTextPaint.setTextAlign(Paint.Align.CENTER);
+        mTextPaint.setTextAlign(mTextAlign);
         float y = getLrcHeight() / 2f;
         float x = getLrcWidth() / 2f + getPaddingLeft();
         for (int i = 0; i < getLrcCount(); i++) {
@@ -287,15 +321,15 @@ public class LrcView extends View {
         }
     }
 
-    private String GetContentByLinePosition(int linePosition) {
+    public String GetContentByLinePosition(int linePosition) {
         return mLrcData.get(linePosition).getText();
     }
 
-    private int GetTimeByLinePosition(int linePosition) {
-        return mLrcData.get(linePosition).getTime()
+    public long GetTimeByLinePosition(int linePosition) {
+        return mLrcData.get(linePosition).getTime();
     }
 
-    private int getUpdateTimeLinePosition(long time) {
+    public int getUpdateTimeLinePosition(long time) {
         int linePos = 0;
         for (int i = 0; i < getLrcCount(); i++) {
             Lrc lrc = mLrcData.get(i);
@@ -367,7 +401,7 @@ public class LrcView extends View {
 
     private HashMap<String, StaticLayout> mStaticLayoutHashMap = new HashMap<>();
 
-    private float getTextHeight(int linePosition) {
+    public float getTextHeight(int linePosition) {
         String text = mLrcData.get(linePosition).getText();
         StaticLayout staticLayout = mStaticLayoutHashMap.get(text);
         if (staticLayout == null) {
@@ -569,7 +603,7 @@ public class LrcView extends View {
     }
 
     private BitmapDrawable getBmpDrawable(String strName) {
-        AssetManager assetManager = getAssets();
+        AssetManager assetManager = mContext.getAssets();
         InputStream istr = null;
         try {
             istr = assetManager.open(strName);
@@ -577,7 +611,7 @@ public class LrcView extends View {
             e.printStackTrace();
         }
 
-        return (BitmapDrawable) BitmapFactory.decodeStream(istr);;
+        return (BitmapDrawable) Drawable.createFromStream(istr, null);
     }
 
 
@@ -594,50 +628,75 @@ public class LrcView extends View {
         void onPlay(long time, String content);
     }
 
+    public Object getVarFromMap(String var) {
+        return mGetterMap.get(var);
+    }
+
 
     public void setEmptyContent(String defaultContent) {
         mDefaultContent = defaultContent;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setLrcTextSize(float lrcTextSize) {
         mLrcTextSize = lrcTextSize;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setLrcLineSpaceHeight(float lrcLineSpaceHeight) {
         mLrcLineSpaceHeight = lrcLineSpaceHeight;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setTouchDelay(int touchDelay) {
         mTouchDelay = touchDelay;
         invalidateView();
+        updateGetterMap();
+    }
+
+    public void setIndicatorTouchDelay(int touchDelay) {
+        mIndicatorTouchDelay = touchDelay;
+        invalidateView();
+        updateGetterMap();
     }
 
     public void setNormalColor(@ColorInt int normalColor) {
         mNormalColor = normalColor;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setCurrentPlayLineColor(@ColorInt int currentPlayLineColor) {
         mCurrentPlayLineColor = currentPlayLineColor;
         invalidateView();
+        updateGetterMap();
+    }
+
+    public void setTextAlignment(Object align) {
+        mTextAlign = (Paint.Align) align;
+        invalidateView();
+        updateGetterMap();
     }
 
     public void setNoLrcTextSize(float noLrcTextSize) {
         mNoLrcTextSize = noLrcTextSize;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setNoLrcTextColor(@ColorInt int noLrcTextColor) {
         mNoLrcTextColor = noLrcTextColor;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setIndicatorLineWidth(float indicatorLineWidth) {
         mIndicatorLineWidth = indicatorLineWidth;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setIndicatorTextSize(float indicatorTextSize) {
@@ -646,64 +705,72 @@ public class LrcView extends View {
         invalidateView();
     }
 
+    public void setIndicatorTextColor(int indicatorTextColor) {
+        mIndicatorTextColor = indicatorTextColor;
+        invalidateView();
+        updateGetterMap();
+    }
+
     public void setCurrentIndicateLineTextColor(int currentIndicateLineTextColor) {
         mCurrentIndicateLineTextColor = currentIndicateLineTextColor;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setIndicatorLineColor(int indicatorLineColor) {
         mIndicatorLineColor = indicatorLineColor;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setIndicatorMargin(float indicatorMargin) {
         mIndicatorMargin = indicatorMargin;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setIconLineGap(float iconLineGap) {
         mIconLineGap = iconLineGap;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setIconWidth(float iconWidth) {
         mIconWidth = iconWidth;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setIconHeight(float iconHeight) {
         mIconHeight = iconHeight;
         invalidateView();
-    }
-
-    public void setEnableShowIndicator(boolean enableShowIndicator) {
-        isEnableShowIndicator = enableShowIndicator;
-        invalidateView();
-    }
-
-    public String getPlayDrawable() {
-        return mPlayDrawableStr;
+        updateGetterMap();
     }
 
     public void setPlayDrawable(String drawableFile) {
-        mPlayDrawableStr = drawableFile
+        mPlayDrawableStr = drawableFile;
         mPlayDrawable = getBmpDrawable(mPlayDrawableStr);
         mPlayDrawable.setBounds(mPlayRect);
         invalidateView();
-    }
-
-    public void setIndicatorTextColor(int indicatorTextColor) {
-        mIndicatorTextColor = indicatorTextColor;
-        invalidateView();
+        updateGetterMap();
     }
 
     public void setLrcCurrentTextBold(boolean bold) {
         isCurrentTextBold = bold;
         invalidateView();
+        updateGetterMap();
     }
 
     public void setLrcIndicatorTextBold(boolean bold) {
         isLrcIndicatorTextBold = bold;
         invalidateView();
+        updateGetterMap();
     }
+
+    public void setEnableShowIndicator(boolean enableShowIndicator) {
+        isEnableShowIndicator = enableShowIndicator;
+        invalidateView();
+        updateGetterMap();
+    }
+
 }

@@ -8,42 +8,139 @@ import com.google.appinventor.components.runtime.util.*;
 
 import android.content.Context; 
 import android.widget.FrameLayout;
+import android.graphics.Typeface;
+import android.graphics.Paint;
+
+import java.io.IOException;
+import java.util.List;
 
 import com.lauzy.freedom.library.LrcView;
 import com.lauzy.freedom.library.Lrc;
 import com.lauzy.freedom.library.LrcHelper;
 
-import java.io.IOException;
-import java.util.List;
+
 
 public class LyricViewer extends AndroidNonvisibleComponent {
 
   private Context mContext;
   private LrcView mLrcView;
-  public LyricAttrib mLyricAttrib;
 
   public String mNoLrcText = "No Data";
+  public String mCustomTypeFaceFile = "";
 
   public LyricViewer(ComponentContainer container) {
     super(container.$form());
     this.mContext = container.$context();
 
-    try {
-
-      mLrcView = new LrcView(mContext, MediaUtil.getBitmapDrawable(container.$form()));
-      mLrcView.setOnPlayIndicatorLineListener(new LrcView.OnPlayIndicatorLineListener() {
-                 @Override
-                 public void onPlay(long time, String content) {
-                     PlayIndicatorClicked((int) time, content);
-                 }
-      });
-    
-    } catch(IOException ioException) {
-        return;
-    }
-
+    mLrcView = new LrcView(mContext);
+    mLrcView.setOnPlayIndicatorLineListener(new LrcView.OnPlayIndicatorLineListener() {
+               @Override
+               public void onPlay(long time, String content) {
+                   PlayIndicatorClicked((int) time, content);
+               }
+    });
 
   }
+
+  // Getter Blocks # Simple
+  @SimpleProperty(description = "")
+  public int Width() {
+      return mLrcView.getLrcWidth();
+  }
+  @SimpleProperty(description = "")
+  public int Height() {
+      return mLrcView.getLrcHeight();
+  }
+
+  @SimpleProperty(description = "")
+  public Object TextAlignLeft() {
+      return Paint.Align.LEFT;
+  }
+  @SimpleProperty(description = "")
+  public Object TextAlignCenter() {
+      return Paint.Align.CENTER;
+  }
+  @SimpleProperty(description = "")
+  public Object TextAlignRight() {
+      return Paint.Align.RIGHT;
+  }
+
+  // Getter Blocks # Properties
+  @SimpleProperty(description = "Custom font from assets")
+  public String CustomTypeFace() {
+      return this.mCustomTypeFaceFile;
+  }
+  @SimpleProperty(description = "Custom font from assets")
+  public void CustomTypeFace(String str) {
+      mLrcView.setTypeFace(Typeface.createFromAsset(mContext.getAssets(), str));
+      this.mCustomTypeFaceFile = str;
+  }
+
+
+  @SimpleProperty(description = "No lyrics text")
+  public String EmptyContent() {
+      return this.mNoLrcText;
+  }
+  @SimpleProperty(description = "No lyrics text")
+  public void EmptyContent(String str) {
+      mLrcView.setEmptyContent(str);
+      this.mNoLrcText = str;
+  }
+
+  @SimpleProperty(description = "Font size of lyrics")
+  public float TextSize() {
+      return (float) mLrcView.getVarFromMap("mLrcTextSize");
+  }
+  @SimpleProperty(description = "Font size of lyrics")
+  public void TextSize(float size) {
+      mLrcView.setLrcTextSize(size);
+  }
+
+  @SimpleProperty(description = "Spacing between lines")
+  public float LineSpacing() {
+      return (float) mLrcView.getVarFromMap("mLrcLineSpaceHeight");
+  }
+  @SimpleProperty(description = "Spacing between lines")
+  public void LineSpacing(float size) {
+      mLrcView.setLrcLineSpaceHeight(size);
+  }
+
+  @SimpleProperty(description = "Touch Delay of lyrics")
+  public int TouchDelay() {
+      return (int) mLrcView.getVarFromMap("mTouchDelay");
+  }
+  @SimpleProperty(description = "Touch Delay of lyrics")
+  public void TouchDelay(int delay) {
+      mLrcView.setTouchDelay(delay);
+  }
+
+  @SimpleProperty(description = "Touch Delay of indicator")
+  public int IndicatorTouchDelay() {
+      return (int) mLrcView.getVarFromMap("mIndicatorTouchDelay");
+  }
+  @SimpleProperty(description = "Touch Delay of indicator")
+  public void IndicatorTouchDelay(int delay) {
+      mLrcView.setIndicatorTouchDelay(delay);
+  }
+
+  @SimpleProperty(description = "Normal text color")
+  public int NormalColor() {
+      return (int) mLrcView.getVarFromMap("mNormalColor");
+  }
+  @SimpleProperty(description = "Normal text color")
+  public void NormalColor(int color) {
+      mLrcView.setNormalColor(color);
+  }
+
+  @SimpleProperty(description = "Current play line color")
+  public int CurrentLyricLineColor() {
+      return (int) mLrcView.getVarFromMap("mCurrentPlayLineColor");
+  }
+  @SimpleProperty(description = "Current play line color")
+  public void CurrentLyricLineColor(int color) {
+      mLrcView.setCurrentPlayLineColor(color);
+  }
+
 
   // Events
   @SimpleEvent(description = "When the lyric position is changed and the play button is clicked on the lyric view. It will return the duration/position ( milliseconds ).")
@@ -65,8 +162,8 @@ public class LyricViewer extends AndroidNonvisibleComponent {
   }
 
   @SimpleFunction(description = "Sets the lyric file (lrc) from filepath")
-  public void SetLyricFromFile(String fileName) {
-      List<Lrc> lrcs = LrcHelper.parseLrcFromAssets(mContext, fileName);
+  public void SetLyricFromFile(String filePath) {
+      List<Lrc> lrcs = LrcHelper.parseLrcFromFile(filePath);
       mLrcView.setLrcData(lrcs);
   }
 
@@ -75,14 +172,24 @@ public class LyricViewer extends AndroidNonvisibleComponent {
       mLrcView.updateTime(time);
   }
 
-  @SimpleFunction(description = "Sets 'No Data' text")
-  public void SetEmpty() {
-      mLrcView.setEmptyContent(mNoLrcText);
+  @SimpleFunction(description = "Pauses the autoscrolling")
+  public void Pause() {
+      mLrcView.pause();
   }
 
-  @SimpleFunction(description = "Animates and scrolls to the position by the line position.")
-  public void ScrollToLine(int linePosition) {
-      mLrcView.scrollToPosition(linePosition)
+  @SimpleFunction(description = "Resumes the autoscrolling if paused")
+  public void Resume() {
+      mLrcView.resume();
+  }
+
+  @SimpleFunction(description = "Shows the indicator")
+  public void ShowIndicator() {
+      mLrcView.setEnableShowIndicator(true);
+  }
+
+  @SimpleFunction(description = "Hides the indicator")
+  public void HideIndicator() {
+      mLrcView.setEnableShowIndicator(false);
   }
 
 
@@ -114,15 +221,14 @@ public class LyricViewer extends AndroidNonvisibleComponent {
   }
 
   @SimpleFunction(description = "Returns lyric line content by line position")
-  public String GetTimeByLinePosition(int linePosition) {
+  public long GetTimeByLinePosition(int linePosition) {
       return mLrcView.GetTimeByLinePosition(linePosition);
   }
 
   @SimpleFunction(description = "Returns text height of content by linePosition")
   public float GetTextHeightbyLinePosition(int linePosition) {
-      mLrcView.getTextHeight(linePosition)
+      return mLrcView.getTextHeight(linePosition);
   }
-
 
 
 
@@ -160,10 +266,6 @@ public class LyricViewer extends AndroidNonvisibleComponent {
     return finalTimerString;
 
   }
- 
-
-
-
 
 }
 
