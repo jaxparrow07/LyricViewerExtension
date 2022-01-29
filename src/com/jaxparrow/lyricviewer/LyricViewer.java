@@ -144,8 +144,8 @@ public class LyricViewer extends AndroidNonvisibleComponent {
 
   // Events
   @SimpleEvent(description = "When the lyric position is changed and the play button is clicked on the lyric view. It will return the duration/position ( milliseconds ).")
-  public void PlayIndicatorClicked(int position, String line) {
-      EventDispatcher.dispatchEvent(this, "PlayIndicatorClicked", position, line);
+  public void PlayIndicatorClicked(int position, String content) {
+      EventDispatcher.dispatchEvent(this, "PlayIndicatorClicked", position, content);
   }
 
   // Core Methods
@@ -168,8 +168,8 @@ public class LyricViewer extends AndroidNonvisibleComponent {
   }
 
   @SimpleFunction(description = "Updates the lyric position to matching player's current position ( time )")
-  public void UpdateTime(long time) {
-      mLrcView.updateTime(time);
+  public void UpdateTime(long position) {
+      mLrcView.updateTime(position);
   }
 
   @SimpleFunction(description = "Pauses the autoscrolling")
@@ -192,16 +192,10 @@ public class LyricViewer extends AndroidNonvisibleComponent {
       mLrcView.setEnableShowIndicator(false);
   }
 
-
   // Getter Methods #1
   @SimpleFunction(description = "Returns the line count of current lyrics")
   public int GetLinesCount() {
       return mLrcView.getLrcCount();
-  }
-
-  @SimpleFunction(description = "Returns the indicator position")
-  public int GetIndicatorLinePosition() {
-      return mLrcView.getIndicatePosition();
   }
 
   @SimpleFunction(description = "Returns true if lyric is empty")
@@ -225,17 +219,13 @@ public class LyricViewer extends AndroidNonvisibleComponent {
       return mLrcView.GetTimeByLinePosition(linePosition);
   }
 
-  @SimpleFunction(description = "Returns text height of content by linePosition")
-  public float GetTextHeightbyLinePosition(int linePosition) {
-      return mLrcView.getTextHeight(linePosition);
-  }
 
 
 
 
   // Extra Methods
   @SimpleFunction(description = "Parses milliseconds and returns formatted time ( Useful in some cases )")
-  public String ParseTime(int time) {
+  public String ParseTime(int position) {
 
     /*
 
@@ -247,9 +237,9 @@ public class LyricViewer extends AndroidNonvisibleComponent {
     String finalTimerString = "";
     String secondsString = "";
 
-    int hours = (int) (time / (1000 * 60 * 60));
-    int minutes = (int) (time % (1000 * 60 * 60)) / (1000 * 60);
-    int seconds = (int) ((time % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+    int hours = (int) (position / (1000 * 60 * 60));
+    int minutes = (int) (position % (1000 * 60 * 60)) / (1000 * 60);
+    int seconds = (int) ((position % (1000 * 60 * 60)) % (1000 * 60) / 1000);
 
     if (hours > 0) {
         finalTimerString = hours + ":";

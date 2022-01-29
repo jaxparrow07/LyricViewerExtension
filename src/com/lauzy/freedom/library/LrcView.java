@@ -376,7 +376,7 @@ public class LrcView extends View {
         animator.start();
     }
 
-    public int getIndicatePosition() {
+    private int getIndicatePosition() {
         int pos = 0;
         float min = Float.MAX_VALUE;
         //itemOffset 和 mOffset 最小即当前位置
@@ -401,7 +401,7 @@ public class LrcView extends View {
 
     private HashMap<String, StaticLayout> mStaticLayoutHashMap = new HashMap<>();
 
-    public float getTextHeight(int linePosition) {
+    private float getTextHeight(int linePosition) {
         String text = mLrcData.get(linePosition).getText();
         StaticLayout staticLayout = mStaticLayoutHashMap.get(text);
         if (staticLayout == null) {
