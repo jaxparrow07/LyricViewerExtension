@@ -4,6 +4,8 @@
 ---
 name: LyricViewer
 description: Extension to parse and show lyrics.
+homepage: https://github.com/jaxparrow07/LyricViewerExtension
+
 
 version:
   number: auto
