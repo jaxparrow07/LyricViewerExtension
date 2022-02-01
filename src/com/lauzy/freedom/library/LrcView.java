@@ -159,7 +159,7 @@ public class LrcView extends View {
         isCurrentTextBold = false;
         isLrcIndicatorTextBold = false;
 
-        mPlayDrawableStr = "def_lyric_play_button.png";
+        mPlayDrawableStr = "com.jaxparrow.lyricviewer/def_lyric_play_button.png";
         mPlayDrawable = getBmpDrawable(mPlayDrawableStr);
         
         updateGetterMap();

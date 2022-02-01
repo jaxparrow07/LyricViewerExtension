@@ -76,7 +76,6 @@ public class LyricViewer extends AndroidNonvisibleComponent {
       this.mCustomTypeFaceFile = str;
   }
 
-
   @SimpleProperty(description = "No lyrics text")
   public String EmptyContent() {
       return this.mNoLrcText;
@@ -124,23 +123,157 @@ public class LyricViewer extends AndroidNonvisibleComponent {
   }
 
   @SimpleProperty(description = "Normal text color")
-  public int NormalColor() {
+  public int TextColor() {
       return (int) mLrcView.getVarFromMap("mNormalColor");
   }
   @SimpleProperty(description = "Normal text color")
-  public void NormalColor(int color) {
+  public void TextColor(int color) {
       mLrcView.setNormalColor(color);
   }
 
-  @SimpleProperty(description = "Current play line color")
+  @SimpleProperty(description = "Current playing line color")
   public int CurrentLyricLineColor() {
       return (int) mLrcView.getVarFromMap("mCurrentPlayLineColor");
   }
-  @SimpleProperty(description = "Current play line color")
+  @SimpleProperty(description = "Current playing line color")
   public void CurrentLyricLineColor(int color) {
       mLrcView.setCurrentPlayLineColor(color);
   }
 
+  @SimpleProperty(description = "Text Alignment")
+  public Object TextAlignment() {
+      return mLrcView.getVarFromMap("mTextAlign");
+  }
+  @SimpleProperty(description = "Text Alignment")
+  public void TextAlignment(Object align) {
+      mLrcView.setTextAlignment(align);
+  }
+
+  @SimpleProperty(description = "No Lyric Text Size")
+  public float NoLyricTextSize() {
+      return (float) mLrcView.getVarFromMap("mNoLrcTextSize");
+  }
+  @SimpleProperty(description = "No Lyric Text Size")
+  public void NoLyricTextSize(float size) {
+      mLrcView.setNoLrcTextSize(size);
+  }
+
+  @SimpleProperty(description = "No Lyric Text Color")
+  public int NoLyricTextColor() {
+      return (int) mLrcView.getVarFromMap("mNoLrcTextColor");
+  }
+  @SimpleProperty(description = "No Lyric Text Color")
+  public void NoLyricTextColor(int color) {
+      mLrcView.setNoLrcTextColor(color);
+  }
+
+  @SimpleProperty(description = "Line Width of Indicator")
+  public float IndicatorLineWidth() {
+      return (float) mLrcView.getVarFromMap("mIndicatorLineWidth");
+  }
+  @SimpleProperty(description = "Line Width of Indicator")
+  public void IndicatorLineWidth(float size) {
+      mLrcView.setIndicatorLineWidth(size);
+  }
+
+  @SimpleProperty(description = "Text Size of Indicator")
+  public float IndicatorTextSize() {
+      return (float) mLrcView.getVarFromMap("mIndicatorTextSize");
+  }
+  @SimpleProperty(description = "Text Size of Indicator")
+  public void IndicatorTextSize(float size) {
+      mLrcView.setIndicatorTextSize(size);
+  }
+
+  @SimpleProperty(description = "Text Color of Indicator")
+  public int IndicatorTextColor() {
+      return (int) mLrcView.getVarFromMap("mIndicatorTextColor");
+  }
+  @SimpleProperty(description = "Text Color of Indicator")
+  public void IndicatorTextColor(int color) {
+      mLrcView.setIndicatorTextColor(color);
+  }
+
+  @SimpleProperty(description = "Text Color of the lyric line where the Indicator is in.")
+  public int CurrentIndicatingLineColor() {
+      return (int) mLrcView.getVarFromMap("mCurrentIndicateLineTextColor");
+  }
+  @SimpleProperty(description = "Text Color of the lyric line where the Indicator is in.")
+  public void CurrentIndicatingLineColor(int color) {
+      mLrcView.setCurrentIndicateLineTextColor(color);
+  }
+
+  @SimpleProperty(description = "Line Color of Indicator.")
+  public int IndicatorLineColor() {
+      return (int) mLrcView.getVarFromMap("mIndicatorLineColor");
+  }
+  @SimpleProperty(description = "Line Color of Indicator.")
+  public void IndicatorLineColor(int color) {
+      mLrcView.setIndicatorLineColor(color);
+  } 
+
+  @SimpleProperty(description = "Margin of Indicator.")
+  public float IndicatorMargin() {
+      return (float) mLrcView.getVarFromMap("mIndicatorMargin");
+  }
+  @SimpleProperty(description = "Margin of Indicator.")
+  public void IndicatorMargin(float margin) {
+      mLrcView.setIndicatorMargin(margin);
+  }
+
+  @SimpleProperty(description = "Gap between Icon and Indicator.")
+  public float IconLineGap() {
+      return (float) mLrcView.getVarFromMap("mIconLineGap");
+  }
+  @SimpleProperty(description = "Gap between Icon and Indicator.")
+  public void IconLineGap(float gap) {
+      mLrcView.setIconLineGap(gap);
+  }
+
+  @SimpleProperty(description = "Width of Indicator Icon.")
+  public float IconWidth() {
+      return (float) mLrcView.getVarFromMap("mIconWidth");
+  }
+  @SimpleProperty(description = "Width of Indicator Icon.")
+  public void IconWidth(float width) {
+      mLrcView.setIconWidth(width);
+  }
+
+  @SimpleProperty(description = "Height of Indicator Icon.")
+  public float IconHeight() {
+      return (float) mLrcView.getVarFromMap("mIconHeight");
+  }
+  @SimpleProperty(description = "Height of Indicator Icon.")
+  public void IconHeight(float height) {
+      mLrcView.setIconHeight(height);
+  }
+
+  @SimpleProperty(description = "Play icon of Indicator.")
+  public String IndicatorPlayIcon() {
+      return (String) mLrcView.getVarFromMap("mPlayDrawableStr");
+  }
+  @SimpleProperty(description = "Play icon of Indicator.")
+  public void IndicatorPlayIcon(String str) {
+      mLrcView.setPlayDrawable(str);
+  }
+
+  @SimpleProperty(description = "Setting this to true will make the current playing line Bold.")
+  public boolean CurrentLyricLineBold() {
+      return (boolean) mLrcView.getVarFromMap("isCurrentTextBold");
+  }
+  @SimpleProperty(description = "Setting this to true will make the current playing line Bold.")
+  public void CurrentLyricLineBold(boolean isBold) {
+      mLrcView.setLrcCurrentTextBold(isBold);
+  }
+
+  @SimpleProperty(description = "Setting this to true will make line where the Indicator is in Bold.")
+  public boolean CurrentIndicatingLineBold() {
+      return (boolean) mLrcView.getVarFromMap("isLrcIndicatorTextBold");
+  }
+  @SimpleProperty(description = "Setting this to true will make line where the Indicator is in Bold.")
+  public void CurrentIndicatingLineBold(boolean isBold) {
+      mLrcView.setLrcIndicatorTextBold(isBold);
+  }
 
   // Events
   @SimpleEvent(description = "When the lyric position is changed and the play button is clicked on the lyric view. It will return the duration/position ( milliseconds ).")
