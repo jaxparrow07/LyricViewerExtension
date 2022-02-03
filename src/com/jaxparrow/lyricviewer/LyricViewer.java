@@ -231,20 +231,20 @@ public class LyricViewer extends AndroidNonvisibleComponent {
   }
 
   @SimpleProperty(description = "Width of Indicator Icon.")
-  public float IconWidth() {
+  public float IndicatorPlayIconWidth() {
       return (float) mLrcView.getVarFromMap("mIconWidth");
   }
   @SimpleProperty(description = "Width of Indicator Icon.")
-  public void IconWidth(float width) {
+  public void IndicatorPlayIconWidth(float width) {
       mLrcView.setIconWidth(width);
   }
 
   @SimpleProperty(description = "Height of Indicator Icon.")
-  public float IconHeight() {
+  public float IndicatorPlayIconHeight() {
       return (float) mLrcView.getVarFromMap("mIconHeight");
   }
   @SimpleProperty(description = "Height of Indicator Icon.")
-  public void IconHeight(float height) {
+  public void IndicatorPlayIconHeight(float height) {
       mLrcView.setIconHeight(height);
   }
 
