@@ -10,6 +10,8 @@ import android.content.Context;
 import android.widget.FrameLayout;
 import android.graphics.Typeface;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,23 +26,37 @@ public class LyricViewer extends AndroidNonvisibleComponent {
 
   private Context mContext;
   private LrcView mLrcView;
+  private ComponentContainer mContainer;
 
   public String mNoLrcText = "No Data";
   public String mCustomTypeFaceFile = "";
+  public String mPlayIcon = "default";
 
   public LyricViewer(ComponentContainer container) {
+
     super(container.$form());
     this.mContext = container.$context();
+    this.mContainer = container;
 
-    mLrcView = new LrcView(mContext);
-    mLrcView.setOnPlayIndicatorLineListener(new LrcView.OnPlayIndicatorLineListener() {
-               @Override
-               public void onPlay(long time, String content) {
-                   PlayIndicatorClicked((int) time, content);
-               }
-    });
+    try {
+
+      mLrcView = new LrcView(mContext, (BitmapDrawable) Drawable.createFromStream(mContainer.$form().openAssetForExtension(this, "def_lyric_play_button.png"), null));
+      mLrcView.setOnPlayIndicatorLineListener(new LrcView.OnPlayIndicatorLineListener() {
+          @Override
+          public void onPlay(long time, String content) {
+              PlayIndicatorClicked((int) time, content);
+          }
+      });
+
+    } catch(IOException ioException) {
+        return;
+    }
+
+
+
 
   }
+
 
   // Getter Blocks # Simple
   @SimpleProperty(description = "")
@@ -72,8 +88,8 @@ public class LyricViewer extends AndroidNonvisibleComponent {
   }
   @SimpleProperty(description = "Custom font from assets")
   public void CustomTypeFace(String str) {
-      mLrcView.setTypeFace(Typeface.createFromAsset(mContext.getAssets(), str));
-      this.mCustomTypeFaceFile = str;
+      this.mCustomTypeFaceFile = str;   
+      mLrcView.setTypeFace(Typeface.createFromAsset(mContext.getAssets(), mCustomTypeFaceFile));
   }
 
   @SimpleProperty(description = "No lyrics text")
@@ -250,11 +266,22 @@ public class LyricViewer extends AndroidNonvisibleComponent {
 
   @SimpleProperty(description = "Play icon of Indicator.")
   public String IndicatorPlayIcon() {
-      return (String) mLrcView.getVarFromMap("mPlayDrawableStr");
+      return mPlayIcon;
   }
   @SimpleProperty(description = "Play icon of Indicator.")
   public void IndicatorPlayIcon(String str) {
-      mLrcView.setPlayDrawable(str);
+
+      try {
+
+        this.mPlayIcon = str;
+        mLrcView.setPlayDrawable((BitmapDrawable) Drawable.createFromStream(mContainer.$form().openAsset(mPlayIcon), null)); 
+        
+      } catch(IOException ioException) {
+
+        throw new YailRuntimeError(ioException.getMessage(), "LyricViewer");
+
+      }
+
   }
 
   @SimpleProperty(description = "Setting this to true will make the current playing line Bold.")
@@ -290,8 +317,16 @@ public class LyricViewer extends AndroidNonvisibleComponent {
 
   @SimpleFunction(description = "Sets the lyric file (lrc) from app assets")
   public void SetLyricFromAssets(String fileName) {
-      List<Lrc> lrcs = LrcHelper.parseLrcFromAssets(mContext, fileName);
-      mLrcView.setLrcData(lrcs);
+      try {
+        
+        List<Lrc> lrcs = LrcHelper.parseLrcFromAssets(mContainer.$form().openAsset(fileName));
+        mLrcView.setLrcData(lrcs);
+
+      } catch(IOException ioException) {
+
+        throw new YailRuntimeError(ioException.getMessage(), "LyricViewer");
+
+      }
   }
 
   @SimpleFunction(description = "Sets the lyric file (lrc) from filepath")

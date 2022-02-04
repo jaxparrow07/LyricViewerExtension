@@ -31,13 +31,8 @@ public class LrcHelper {
     private static final String LINE_REGEX = "((\\[\\d{2}:\\d{2}\\.\\d{2}])+)(.*)";
     private static final String TIME_REGEX = "\\[(\\d{2}):(\\d{2})\\.(\\d{2})]";
 
-    public static List<Lrc> parseLrcFromAssets(Context context, String fileName) {
-        try {
-            return parseInputStream(context.getResources().getAssets().open(fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static List<Lrc> parseLrcFromAssets(InputStream inputStream) {
+        return parseInputStream(inputStream);
     }
 
     public static List<Lrc> parseLrcFromFile(String file) {

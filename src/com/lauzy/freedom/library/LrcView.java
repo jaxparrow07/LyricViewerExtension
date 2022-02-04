@@ -96,9 +96,9 @@ public class LrcView extends View {
     private Map<String, Object> mGetterMap;
     private Context mContext;
 
-    public LrcView(Context context) {
+    public LrcView(Context context, BitmapDrawable bmp) {
         super(context);
-        init(context);
+        init(context, bmp);
     }
 
     public void updateGetterMap() {
@@ -123,11 +123,10 @@ public class LrcView extends View {
         mGetterMap.put("mIconHeight", mIconHeight);
         mGetterMap.put("isCurrentTextBold", isCurrentTextBold);
         mGetterMap.put("isLrcIndicatorTextBold", isLrcIndicatorTextBold);
-        mGetterMap.put("mPlayDrawableStr", mPlayDrawableStr);
     
     }
 
-    private void init(Context context) {
+    private void init(Context context, BitmapDrawable playIcon) {
 
         this.mContext = context;
         mGetterMap = new HashMap<>();
@@ -159,8 +158,7 @@ public class LrcView extends View {
         isCurrentTextBold = false;
         isLrcIndicatorTextBold = false;
 
-        mPlayDrawableStr = "com.jaxparrow.lyricviewer/def_lyric_play_button.png";
-        mPlayDrawable = getBmpDrawable(mPlayDrawableStr);
+        mPlayDrawable = playIcon;
         
         updateGetterMap();
         setupConfigs(context);
@@ -602,19 +600,6 @@ public class LrcView extends View {
         }
     }
 
-    private BitmapDrawable getBmpDrawable(String strName) {
-        AssetManager assetManager = mContext.getAssets();
-        InputStream istr = null;
-        try {
-            istr = assetManager.open(strName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return (BitmapDrawable) Drawable.createFromStream(istr, null);
-    }
-
-
 
     /*------------------Config-------------------*/
 
@@ -747,12 +732,10 @@ public class LrcView extends View {
         updateGetterMap();
     }
 
-    public void setPlayDrawable(String drawableFile) {
-        mPlayDrawableStr = drawableFile;
-        mPlayDrawable = getBmpDrawable(mPlayDrawableStr);
+    public void setPlayDrawable(BitmapDrawable bmp) {
+        mPlayDrawable = bmp;
         mPlayDrawable.setBounds(mPlayRect);
         invalidateView();
-        updateGetterMap();
     }
 
     public void setLrcCurrentTextBold(boolean bold) {

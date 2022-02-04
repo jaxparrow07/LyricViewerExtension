@@ -3,13 +3,13 @@
 
 ---
 name: LyricViewer
-description: Extension to parse and show lyrics.
+description: Lyrics Player for Music Apps ( lrc ).
 homepage: https://github.com/jaxparrow07/LyricViewerExtension
 
 
 version:
   number: auto
-  name: '1.0'
+  name: '1.1'
 
 authors:
   - Jaxparrow
